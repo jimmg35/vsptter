@@ -1,0 +1,92 @@
+{
+  "name": "vsptter",
+  "displayName": "vsptter",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.89.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "vsptter.showLoginForm",
+        "title": "請輸入ptt帳號"
+      },
+      {
+        "command": "vsptter.enterGuestMode",
+        "title": "進入訪客瀏覽模式"
+      },
+      {
+        "command": "vsptter.refreshConnection",
+        "title": "重新載入"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vsptter",
+          "title": "vsptter",
+          "icon": "$(heart)"
+        }
+      ]
+    },
+    "views": {
+      "vsptter": [
+        {
+          "id": "vsptter",
+          "name": "摸魚摸到大白鯊"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "vsptter",
+        "contents": "連線成功!可以選擇是否登入或是使用訪客瀏覽\n[使用者登入](command:vsptter.showLoginForm)\n[訪客瀏覽](command:vsptter.enterGuestMode)",
+        "when": "vsptter.serverConnectionStatus === success"
+      },
+      {
+        "view": "vsptter",
+        "contents": "正在連線至PTT伺服器...",
+        "when": "vsptter.serverConnectionStatus === connecting"
+      },
+      {
+        "view": "vsptter",
+        "contents": "連線失敗，可能是機房在維修中，或是網路連線不穩\n[刷新](command:vsptter.refreshConnection)",
+        "when": "vsptter.serverConnectionStatus === failed"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.89.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.3.9",
+    "eslint": "^8.57.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "ptt-client": "^0.9.0"
+  }
+}

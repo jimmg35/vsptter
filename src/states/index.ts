@@ -1,6 +1,5 @@
-import * as _ from "lodash";
-import * as vscode from "vscode";
-import { ServerConnectionStatus, ViewingMode } from "./types/credential";
+import * as vscode from 'vscode';
+import { ServerConnectionStatus, ViewingMode } from './types/credential';
 
 type StateTypes = ServerConnectionStatus | string | ViewingMode;
 
@@ -22,20 +21,20 @@ export class StateManager {
   constructor() {
     this.appStates = {
       serverConnectionStatus: {
-        key: "vsptter.serverConnectionStatus",
-        value: "connecting",
+        key: 'vsptter.serverConnectionStatus',
+        value: 'connecting',
       },
       username: {
-        key: "vsptter.username",
-        value: "",
+        key: 'vsptter.username',
+        value: '',
       },
       password: {
-        key: "vsptter.password",
-        value: "",
+        key: 'vsptter.password',
+        value: '',
       },
       viewingMode: {
-        key: "vsptter.viewingMode",
-        value: "not-decided",
+        key: 'vsptter.viewingMode',
+        value: 'not-decided',
       },
     };
     this.init();
@@ -43,9 +42,9 @@ export class StateManager {
 
   setState<T extends StateTypes>(state: keyof IAppSatate, value: T) {
     vscode.commands.executeCommand(
-      "setContext",
+      'setContext',
       this.appStates[state].key,
-      value
+      value,
     );
     this.appStates[state].value = value;
   }
@@ -55,12 +54,12 @@ export class StateManager {
   }
 
   init() {
-    this.appStates.serverConnectionStatus.value = "connecting";
+    this.appStates.serverConnectionStatus.value = 'connecting';
     for (const state in this.appStates) {
       vscode.commands.executeCommand(
-        "setContext",
+        'setContext',
         this.appStates[state as keyof IAppSatate].key,
-        this.appStates[state as keyof IAppSatate].value
+        this.appStates[state as keyof IAppSatate].value,
       );
     }
   }

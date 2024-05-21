@@ -9,7 +9,7 @@ class CredentialService {
     this.pttClient = pttClient;
   }
 
-  async openLoginForm() {
+  async openLoginForm(statusBarItem: vscode.StatusBarItem) {
     const username = await vscode.window.showInputBox({
       placeHolder: "username",
     });
@@ -36,18 +36,30 @@ class CredentialService {
 
     await this.authenticate(
       stateManager.getState("username"),
-      stateManager.getState("password")
+      stateManager.getState("password"),
+      statusBarItem
     );
   }
 
-  async authenticate(username: string, password: string) {
+  enterGuestMode(statusBarItem: vscode.StatusBarItem) {
+    stateManager.setState("viewingMode", "guest");
+    statusBarItem.text = `👤 訪客模式`;
+    statusBarItem.show();
+  }
+
+  async authenticate(
+    username: string,
+    password: string,
+    statusBarItem: vscode.StatusBarItem
+  ) {
     const response = await this.pttClient.login(username, password, true);
-    console.log(response);
     if (response) {
       stateManager.setState("viewingMode", "logged");
+
+      statusBarItem.text = `👤 鄉民 ${stateManager.getState("username")}`;
+      statusBarItem.show();
       return;
     }
-
     vscode.window.showErrorMessage(
       "登入失敗，帳密打錯了吧(´_ゝ`)",
       ...["哪尼Σ(;ﾟдﾟ)"]

@@ -40,6 +40,10 @@
         {
           "id": "vsptter",
           "name": "摸魚摸到大白鯊"
+        },
+        {
+          "id": "vsptter-board-explorer",
+          "name": "看板列表"
         }
       ]
     },
@@ -63,6 +67,11 @@
         "view": "vsptter",
         "contents": "登入成功!",
         "when": "vsptter.serverConnectionStatus === success && vsptter.viewingMode === logged"
+      },
+      {
+        "view": "vsptter",
+        "contents": "訪客模式瀏覽中",
+        "when": "vsptter.serverConnectionStatus === success && vsptter.viewingMode === guest"
       }
     ]
   },

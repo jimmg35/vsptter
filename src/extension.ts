@@ -7,26 +7,31 @@ import CredentialService from "./services/credential.service";
 
 export async function activate(context: vscode.ExtensionContext) {
   const pttClient = await bootstrap();
+
+  const statusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    1000
+  );
+  context.subscriptions.push(statusBarItem);
+
   if (pttClient) {
     const credentialService = new CredentialService(pttClient);
 
     context.subscriptions.push(
       vscode.commands.registerCommand("vsptter.showLoginForm", async () => {
-        credentialService.openLoginForm();
+        credentialService.openLoginForm(statusBarItem);
       })
     );
 
     context.subscriptions.push(
       vscode.commands.registerCommand("vsptter.enterGuestMode", () => {
-        console.log("enterGuestMode");
+        credentialService.enterGuestMode(statusBarItem);
       })
     );
 
     context.subscriptions.push(
       vscode.commands.registerCommand("vsptter.refreshConnection", async () => {
-        console.log("refreshConnection");
         await bootstrap();
-        // stateManager.init();
       })
     );
   }

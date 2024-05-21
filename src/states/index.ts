@@ -1,5 +1,9 @@
 import * as vscode from 'vscode';
-import { ServerConnectionStatus, ViewingMode } from './types/credential';
+import {
+  ServerConnectionStatus,
+  StatusType,
+  ViewingMode,
+} from './types/credential';
 
 type StateTypes = ServerConnectionStatus | string | ViewingMode;
 
@@ -13,9 +17,10 @@ export interface IAppSatate {
   username: IState<string>;
   password: IState<string>;
   viewingMode: IState<ViewingMode>;
+  statusType: IState<StatusType>;
 }
 
-export class StateManager {
+class StateManager {
   private appStates: IAppSatate;
 
   constructor() {
@@ -35,6 +40,10 @@ export class StateManager {
       viewingMode: {
         key: 'vsptter.viewingMode',
         value: 'not-decided',
+      },
+      statusType: {
+        key: 'vsptter.statusType',
+        value: 'none',
       },
     };
     this.init();
@@ -65,5 +74,4 @@ export class StateManager {
   }
 }
 
-const stateManager = new StateManager();
-export default stateManager;
+export default StateManager;

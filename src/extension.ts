@@ -1,39 +1,46 @@
+import 'reflect-metadata';
 import * as vscode from 'vscode';
-import bootstrap from './bootstrap';
+import connect2Ptt from './ptt';
 import CredentialService from './services/credential.service';
+import StatusService from './services/status.service';
+import StateManager from './states';
+import { container } from 'tsyringe';
+import bootstrap from './bootstrap';
+import inject2Services from './inject';
 
 (global as any).WebSocket = require('ws');
 
 export async function activate(context: vscode.ExtensionContext) {
-  const pttClient = await bootstrap();
+  // register basic service units.
+  await bootstrap(context);
 
-  const statusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    1000,
+  // resolve service dependencies.
+  // const { credentialService, statusService } =
+  inject2Services();
+
+  // const credentialService = new CredentialService({
+  //   pttClient,
+  //   stateManager,
+  // });
+  // const statusService = new StatusService(statusBarItem);
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('vsptter.showLoginForm', async () => {
+      // credentialService.openLoginForm();
+    }),
   );
-  context.subscriptions.push(statusBarItem);
 
-  if (pttClient) {
-    const credentialService = new CredentialService(pttClient);
+  context.subscriptions.push(
+    vscode.commands.registerCommand('vsptter.enterGuestMode', () => {
+      // credentialService.enterGuestMode();
+    }),
+  );
 
-    context.subscriptions.push(
-      vscode.commands.registerCommand('vsptter.showLoginForm', async () => {
-        credentialService.openLoginForm(statusBarItem);
-      }),
-    );
-
-    context.subscriptions.push(
-      vscode.commands.registerCommand('vsptter.enterGuestMode', () => {
-        credentialService.enterGuestMode(statusBarItem);
-      }),
-    );
-
-    context.subscriptions.push(
-      vscode.commands.registerCommand('vsptter.refreshConnection', async () => {
-        await bootstrap();
-      }),
-    );
-  }
+  // context.subscriptions.push(
+  //   vscode.commands.registerCommand('vsptter.refreshConnection', async () => {
+  //     await bootstrap();
+  //   }),
+  // );
 }
 
 export function deactivate() {}

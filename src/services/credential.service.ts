@@ -1,15 +1,25 @@
 import * as vscode from 'vscode';
 import Ptt from 'ptt-client/dist';
-import stateManager from '../states';
+import StateManager from '../states';
+import { autoInjectable, inject } from 'tsyringe';
 
-class CredentialService {
+@autoInjectable()
+export default class CredentialService {
   private pttClient: Ptt;
+  private stateManager: StateManager;
+  private statusBarItem: vscode.StatusBarItem;
 
-  constructor(pttClient: Ptt) {
+  constructor(
+    @inject('pttClient') pttClient: Ptt,
+    @inject('stateManager') stateManager: StateManager,
+    @inject('statusBarItem') statusBarItem: vscode.StatusBarItem,
+  ) {
     this.pttClient = pttClient;
+    this.stateManager = stateManager;
+    this.statusBarItem = statusBarItem;
   }
 
-  async openLoginForm(statusBarItem: vscode.StatusBarItem) {
+  async openLoginForm() {
     const username = await vscode.window.showInputBox({
       placeHolder: 'username',
     });
@@ -31,33 +41,29 @@ class CredentialService {
       return;
     }
 
-    stateManager.setState('username', username);
-    stateManager.setState('password', password);
+    this.stateManager.setState('username', username);
+    this.stateManager.setState('password', password);
 
-    await this.authenticate(
-      stateManager.getState('username'),
-      stateManager.getState('password'),
-      statusBarItem,
+    await this.authenticate();
+  }
+
+  enterGuestMode() {
+    this.stateManager.setState('viewingMode', 'guest');
+    this.statusBarItem.text = `👤 訪客模式`;
+    this.statusBarItem.show();
+  }
+
+  async authenticate() {
+    const response = await this.pttClient.login(
+      this.stateManager.getState('username'),
+      this.stateManager.getState('password'),
+      true,
     );
-  }
-
-  enterGuestMode(statusBarItem: vscode.StatusBarItem) {
-    stateManager.setState('viewingMode', 'guest');
-    statusBarItem.text = `👤 訪客模式`;
-    statusBarItem.show();
-  }
-
-  async authenticate(
-    username: string,
-    password: string,
-    statusBarItem: vscode.StatusBarItem,
-  ) {
-    const response = await this.pttClient.login(username, password, true);
     if (response) {
-      stateManager.setState('viewingMode', 'logged');
+      this.stateManager.setState('viewingMode', 'logged');
 
-      statusBarItem.text = `👤 鄉民 ${stateManager.getState('username')}`;
-      statusBarItem.show();
+      this.statusBarItem.text = `👤 鄉民 ${this.stateManager.getState('username')}`;
+      this.statusBarItem.show();
       return;
     }
     vscode.window.showErrorMessage(
@@ -66,5 +72,3 @@ class CredentialService {
     );
   }
 }
-
-export default CredentialService;

@@ -1,40 +1,20 @@
-import Ptt from 'ptt-client';
-import stateManager from './states';
-import { ServerConnectionStatus } from './states/types/credential';
+import 'reflect-metadata';
+import StateManager from './states';
+import connect2Ptt from './ptt';
+import * as vscode from 'vscode';
+import { container } from 'tsyringe';
 
-const initPttClient = async (): Promise<Ptt | undefined> => {
-  console.log('attempting to connect to ptt server');
-  return new Promise((resolve) => {
-    const ptt = new Ptt();
-    ptt.once('connect', () => {
-      console.log('ptt client connected');
-      resolve(ptt);
-    });
-    ptt.once('error', () => {
-      console.log('ptt client connect timeout');
-      resolve(undefined);
-    });
-  });
-};
-
-const bootstrap = async (): Promise<Ptt | undefined> => {
-  stateManager.init();
-  return new Promise(async (resolve) => {
-    const pttClient = await initPttClient();
-    if (!pttClient) {
-      stateManager.setState<ServerConnectionStatus>(
-        'serverConnectionStatus',
-        'failed',
-      );
-      resolve(undefined);
-      return;
-    }
-    stateManager.setState<ServerConnectionStatus>(
-      'serverConnectionStatus',
-      'success',
-    );
-    resolve(pttClient);
-  });
+const bootstrap = async (context: vscode.ExtensionContext) => {
+  const stateManager = new StateManager();
+  const pttClient = await connect2Ptt({ stateManager });
+  const statusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    1000,
+  );
+  container.register('stateManager', { useValue: stateManager });
+  container.register('pttClient', { useValue: pttClient });
+  container.register('statusBarItem', { useValue: statusBarItem });
+  context.subscriptions.push(statusBarItem);
 };
 
 export default bootstrap;

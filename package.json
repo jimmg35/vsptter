@@ -9,6 +9,10 @@
   "categories": [
     "Other"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jimmg35/vsptter"
+  },
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {

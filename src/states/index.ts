@@ -1,8 +1,8 @@
 import * as _ from "lodash";
 import * as vscode from "vscode";
-import { ServerConnectionStatus } from "./types/credential";
+import { ServerConnectionStatus, ViewingMode } from "./types/credential";
 
-type StateTypes = ServerConnectionStatus | string;
+type StateTypes = ServerConnectionStatus | string | ViewingMode;
 
 export interface IState<T> {
   key: string;
@@ -13,9 +13,10 @@ export interface IAppSatate {
   serverConnectionStatus: IState<ServerConnectionStatus>;
   username: IState<string>;
   password: IState<string>;
+  viewingMode: IState<ViewingMode>;
 }
 
-class StateManager {
+export class StateManager {
   private appStates: IAppSatate;
 
   constructor() {
@@ -31,6 +32,10 @@ class StateManager {
       password: {
         key: "vsptter.password",
         value: "",
+      },
+      viewingMode: {
+        key: "vsptter.viewingMode",
+        value: "not-decided",
       },
     };
     this.init();

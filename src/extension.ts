@@ -11,13 +11,8 @@ export async function activate(context: vscode.ExtensionContext) {
     const credentialService = new CredentialService(pttClient);
 
     context.subscriptions.push(
-      vscode.commands.registerCommand("vsptter.showLoginForm", () => {
-        stateManager.getState("username");
-
-        credentialService.authenticate(
-          stateManager.getState("username"),
-          stateManager.getState("password")
-        );
+      vscode.commands.registerCommand("vsptter.showLoginForm", async () => {
+        credentialService.openLoginForm();
       })
     );
 

@@ -47,7 +47,7 @@
       {
         "view": "vsptter",
         "contents": "連線成功!可以選擇是否登入或是使用訪客瀏覽\n[使用者登入](command:vsptter.showLoginForm)\n[訪客瀏覽](command:vsptter.enterGuestMode)",
-        "when": "vsptter.serverConnectionStatus === success"
+        "when": "vsptter.serverConnectionStatus === success && vsptter.viewingMode === not-decided"
       },
       {
         "view": "vsptter",
@@ -58,6 +58,11 @@
         "view": "vsptter",
         "contents": "連線失敗，可能是機房在維修中，或是網路連線不穩\n[刷新](command:vsptter.refreshConnection)",
         "when": "vsptter.serverConnectionStatus === failed"
+      },
+      {
+        "view": "vsptter",
+        "contents": "登入成功!",
+        "when": "vsptter.serverConnectionStatus === success && vsptter.viewingMode === logged"
       }
     ]
   },

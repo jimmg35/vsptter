@@ -1,7 +1,7 @@
-import * as vscode from "vscode";
-import { ServerConnectionStatus } from "./types/credential";
+import * as vscode from 'vscode';
+import { ServerConnectionStatus, ViewingMode } from './types/credential';
 
-type StateTypes = ServerConnectionStatus | string;
+type StateTypes = ServerConnectionStatus | string | ViewingMode;
 
 export interface IState<T> {
   key: string;
@@ -11,30 +11,40 @@ export interface IState<T> {
 export interface IAppSatate {
   serverConnectionStatus: IState<ServerConnectionStatus>;
   username: IState<string>;
+  password: IState<string>;
+  viewingMode: IState<ViewingMode>;
 }
 
-class StateManager {
-  private appStates: IAppSatate = {
-    serverConnectionStatus: {
-      key: "vsptter.serverConnectionStatus",
-      value: "connecting",
-    },
-    username: {
-      key: "vsptter.username",
-      value: "",
-    },
-  };
-  private backupAppSatate: IAppSatate = { ...this.appStates };
+export class StateManager {
+  private appStates: IAppSatate;
 
   constructor() {
+    this.appStates = {
+      serverConnectionStatus: {
+        key: 'vsptter.serverConnectionStatus',
+        value: 'connecting',
+      },
+      username: {
+        key: 'vsptter.username',
+        value: '',
+      },
+      password: {
+        key: 'vsptter.password',
+        value: '',
+      },
+      viewingMode: {
+        key: 'vsptter.viewingMode',
+        value: 'not-decided',
+      },
+    };
     this.init();
   }
 
   setState<T extends StateTypes>(state: keyof IAppSatate, value: T) {
     vscode.commands.executeCommand(
-      "setContext",
+      'setContext',
       this.appStates[state].key,
-      value
+      value,
     );
     this.appStates[state].value = value;
   }
@@ -44,12 +54,12 @@ class StateManager {
   }
 
   init() {
-    this.appStates = { ...this.backupAppSatate };
+    this.appStates.serverConnectionStatus.value = 'connecting';
     for (const state in this.appStates) {
       vscode.commands.executeCommand(
-        "setContext",
+        'setContext',
         this.appStates[state as keyof IAppSatate].key,
-        this.appStates[state as keyof IAppSatate].value
+        this.appStates[state as keyof IAppSatate].value,
       );
     }
   }

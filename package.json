@@ -40,6 +40,10 @@
         {
           "id": "vsptter",
           "name": "摸魚摸到大白鯊"
+        },
+        {
+          "id": "vsptter-board-explorer",
+          "name": "看板列表"
         }
       ]
     },
@@ -47,7 +51,7 @@
       {
         "view": "vsptter",
         "contents": "連線成功!可以選擇是否登入或是使用訪客瀏覽\n[使用者登入](command:vsptter.showLoginForm)\n[訪客瀏覽](command:vsptter.enterGuestMode)",
-        "when": "vsptter.serverConnectionStatus === success"
+        "when": "vsptter.serverConnectionStatus === success && vsptter.viewingMode === not-decided"
       },
       {
         "view": "vsptter",
@@ -58,6 +62,16 @@
         "view": "vsptter",
         "contents": "連線失敗，可能是機房在維修中，或是網路連線不穩\n[刷新](command:vsptter.refreshConnection)",
         "when": "vsptter.serverConnectionStatus === failed"
+      },
+      {
+        "view": "vsptter",
+        "contents": "登入成功!",
+        "when": "vsptter.serverConnectionStatus === success && vsptter.viewingMode === logged"
+      },
+      {
+        "view": "vsptter",
+        "contents": "訪客模式瀏覽中",
+        "when": "vsptter.serverConnectionStatus === success && vsptter.viewingMode === guest"
       }
     ]
   },
@@ -70,9 +84,11 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
+    "format:fix": "prettier --write \"src/**/*.ts\" ",
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.4",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
     "@types/vscode": "^1.89.0",
@@ -81,12 +97,16 @@
     "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.3.9",
     "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
     "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "prettier": "^3.0.0"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "ptt-client": "^0.9.0"
   }
 }

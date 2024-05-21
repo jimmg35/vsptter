@@ -1,38 +1,39 @@
-import * as vscode from "vscode";
-import bootstrap from "./bootstrap";
+import * as vscode from 'vscode';
+import bootstrap from './bootstrap';
+import CredentialService from './services/credential.service';
 
-(global as any).WebSocket = require("ws");
+(global as any).WebSocket = require('ws');
 
 export async function activate(context: vscode.ExtensionContext) {
   const pttClient = await bootstrap();
 
-  // ptt.once("connect", () => {
-  //   console.log("connected");
-  //   vscode.commands.executeCommand(
-  //     "setContext",
-  //     "vsptter.isServerConnected",
-  //     true
-  //   );
-  // });
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand("vsptter.showLoginForm", () => {
-      console.log("showLoginForm");
-    })
+  const statusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    1000,
   );
+  context.subscriptions.push(statusBarItem);
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand("vsptter.enterGuestMode", () => {
-      console.log("enterGuestMode");
-    })
-  );
+  if (pttClient) {
+    const credentialService = new CredentialService(pttClient);
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand("vsptter.refreshConnection", async () => {
-      console.log("refreshConnection");
-      await bootstrap();
-    })
-  );
+    context.subscriptions.push(
+      vscode.commands.registerCommand('vsptter.showLoginForm', async () => {
+        credentialService.openLoginForm(statusBarItem);
+      }),
+    );
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand('vsptter.enterGuestMode', () => {
+        credentialService.enterGuestMode(statusBarItem);
+      }),
+    );
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand('vsptter.refreshConnection', async () => {
+        await bootstrap();
+      }),
+    );
+  }
 }
 
 export function deactivate() {}

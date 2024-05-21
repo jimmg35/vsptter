@@ -35,7 +35,7 @@
         {
           "id": "vsptter",
           "title": "vsptter",
-          "icon": "$(heart)"
+          "icon": "resources/vill.svg"
         }
       ]
     },

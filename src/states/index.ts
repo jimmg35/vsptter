@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as vscode from "vscode";
 import { ServerConnectionStatus } from "./types/credential";
 
@@ -11,22 +12,27 @@ export interface IState<T> {
 export interface IAppSatate {
   serverConnectionStatus: IState<ServerConnectionStatus>;
   username: IState<string>;
+  password: IState<string>;
 }
 
 class StateManager {
-  private appStates: IAppSatate = {
-    serverConnectionStatus: {
-      key: "vsptter.serverConnectionStatus",
-      value: "connecting",
-    },
-    username: {
-      key: "vsptter.username",
-      value: "",
-    },
-  };
-  private backupAppSatate: IAppSatate = { ...this.appStates };
+  private appStates: IAppSatate;
 
   constructor() {
+    this.appStates = {
+      serverConnectionStatus: {
+        key: "vsptter.serverConnectionStatus",
+        value: "connecting",
+      },
+      username: {
+        key: "vsptter.username",
+        value: "",
+      },
+      password: {
+        key: "vsptter.password",
+        value: "",
+      },
+    };
     this.init();
   }
 
@@ -44,7 +50,7 @@ class StateManager {
   }
 
   init() {
-    this.appStates = { ...this.backupAppSatate };
+    this.appStates.serverConnectionStatus.value = "connecting";
     for (const state in this.appStates) {
       vscode.commands.executeCommand(
         "setContext",

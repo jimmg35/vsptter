@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import { StatusType, StatusTypeMap } from '../states/types/credential';
 import StateManager from '../states';
-import { autoInjectable, inject } from 'tsyringe';
+import { autoInjectable, inject, injectable } from 'tsyringe';
 
-@autoInjectable()
+// @autoInjectable()
+@injectable()
 export default class StatusService {
   private statusBarItem: vscode.StatusBarItem;
   private stateManager: StateManager;

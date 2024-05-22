@@ -61,7 +61,9 @@ class WelcomeController extends BaseController {
     )
   }
 
-  public enterGeustMode() {}
+  public enterGeustMode() {
+    this.statusService.changeStatus('logged')
+  }
 }
 
 export default WelcomeController

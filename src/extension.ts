@@ -1,12 +1,12 @@
-import 'reflect-metadata';
-import * as vscode from 'vscode';
-import bootstrap from './bootstrap';
+import 'reflect-metadata'
+import * as vscode from 'vscode'
+import bootstrap from './bootstrap'
 
-(global as any).WebSocket = require('ws');
+;(global as any).WebSocket = require('ws')
 
 export async function activate(context: vscode.ExtensionContext) {
   // register service units.
-  await bootstrap(context);
+  await bootstrap(context)
 
   // context.subscriptions.push(
   //   vscode.commands.registerCommand('vsptter.command.openLoginForm', async () => {

@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { container } from 'tsyringe';
 import CredentialService from './services/credential.service';
 import StatusService from './services/status.service';
+import WelcomeController from './controllers/welcome.controller';
 
 const bootstrap = async (context: vscode.ExtensionContext) => {
   // instanciation of basic service units.
@@ -18,15 +19,19 @@ const bootstrap = async (context: vscode.ExtensionContext) => {
   container.register('stateManager', { useValue: stateManager });
   container.register('pttClient', { useValue: pttClient });
   container.register('statusBarItem', { useValue: statusBarItem });
+  container.register('vscodeContext', { useValue: context });
   context.subscriptions.push(statusBarItem);
 
-  // resolve dependencies
+  // resolve dependencies of services
   const credentialService = container.resolve(CredentialService);
   const statusService = container.resolve(StatusService);
 
   // register service units
   container.register('credentialService', { useValue: credentialService });
   container.register('statusService', { useValue: statusService });
+
+  // resolve dependencies of controllers
+  const welcomeController = container.resolve(WelcomeController);
 };
 
 export default bootstrap;

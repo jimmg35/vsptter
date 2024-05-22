@@ -26,23 +26,23 @@ class StateManager {
   constructor() {
     this.appStates = {
       serverConnectionStatus: {
-        key: 'vsptter.serverConnectionStatus',
+        key: 'vsptter.state.serverConnectionStatus',
         value: 'connecting',
       },
       username: {
-        key: 'vsptter.username',
+        key: 'vsptter.state.username',
         value: '',
       },
       password: {
-        key: 'vsptter.password',
+        key: 'vsptter.state.password',
         value: '',
       },
       viewingMode: {
-        key: 'vsptter.viewingMode',
+        key: 'vsptter.state.viewingMode',
         value: 'not-decided',
       },
       statusType: {
-        key: 'vsptter.statusType',
+        key: 'vsptter.state.statusType',
         value: 'none',
       },
     };

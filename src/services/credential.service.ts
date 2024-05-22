@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
 import Ptt from 'ptt-client/dist';
-import StateManager from '../states';
-import { autoInjectable, inject, injectable } from 'tsyringe';
+import StateManager from '../units/states';
+import { inject, injectable } from 'tsyringe';
 
-// @autoInjectable()
 @injectable()
 export default class CredentialService {
   private pttClient: Ptt;

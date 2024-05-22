@@ -1,5 +1,5 @@
-import StateManager from './states';
-import connect2Ptt from './ptt';
+import StateManager from './units/states';
+import connect2Ptt from './units/ptt';
 import * as vscode from 'vscode';
 import { container } from 'tsyringe';
 import CredentialService from './services/credential.service';

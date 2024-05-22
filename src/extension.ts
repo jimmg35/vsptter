@@ -1,10 +1,6 @@
 import 'reflect-metadata';
 import * as vscode from 'vscode';
 import bootstrap from './bootstrap';
-import inject2Services from './inject';
-import { container } from 'tsyringe';
-import CredentialService from './services/credential.service';
-import StatusService from './services/status.service';
 
 (global as any).WebSocket = require('ws');
 
@@ -13,19 +9,19 @@ export async function activate(context: vscode.ExtensionContext) {
   await bootstrap(context);
 
   // context.subscriptions.push(
-  //   vscode.commands.registerCommand('vsptter.showLoginForm', async () => {
+  //   vscode.commands.registerCommand('vsptter.command.showLoginForm', async () => {
   //     credentialService.openLoginForm();
   //   }),
   // );
 
-  // context.subscriptions.push(
-  //   vscode.commands.registerCommand('vsptter.enterGuestMode', () => {
-  //     credentialService.enterGuestMode();
-  //   }),
-  // );
+  context.subscriptions.push(
+    vscode.commands.registerCommand('vsptter.command.enterGuestMode', () => {
+      // credentialService.enterGuestMode();
+    }),
+  );
 
   // context.subscriptions.push(
-  //   vscode.commands.registerCommand('vsptter.refreshConnection', async () => {
+  //   vscode.commands.registerCommand('vsptter.command.refreshConnection', async () => {
   //     await bootstrap();
   //   }),
   // );

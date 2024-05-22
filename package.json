@@ -19,7 +19,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "vsptter.command.showLoginForm",
+        "command": "vsptter.command.openLoginForm",
         "title": "請輸入ptt帳號"
       },
       {
@@ -55,7 +55,7 @@
     "viewsWelcome": [
       {
         "view": "vsptter",
-        "contents": "連線成功!可以選擇是否登入或是使用訪客瀏覽\n[使用者登入](command:vsptter.command.showLoginForm)\n[訪客瀏覽](command:vsptter.command.enterGuestMode)",
+        "contents": "連線成功!可以選擇是否登入或是使用訪客瀏覽\n[使用者登入](command:vsptter.command.openLoginForm)\n[訪客瀏覽](command:vsptter.command.enterGuestMode)",
         "when": "vsptter.state.serverConnectionStatus === success && vsptter.state.viewingMode === not-decided"
       },
       {
@@ -93,6 +93,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/lodash": "^4.17.4",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",

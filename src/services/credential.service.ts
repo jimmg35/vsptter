@@ -1,74 +1,62 @@
-import * as vscode from 'vscode';
-import Ptt from 'ptt-client/dist';
-import StateManager from '../units/states';
-import { inject, injectable } from 'tsyringe';
+import Ptt from 'ptt-client/dist'
+import { inject, injectable } from 'tsyringe'
+import * as vscode from 'vscode'
+import StateManager from '../units/states'
 
 @injectable()
 export default class CredentialService {
-  private pttClient: Ptt;
-  private stateManager: StateManager;
-  private statusBarItem: vscode.StatusBarItem;
+  private pttClient: Ptt
+  private stateManager: StateManager
+  private statusBarItem: vscode.StatusBarItem
 
   constructor(
     @inject('pttClient') pttClient: Ptt,
     @inject('stateManager') stateManager: StateManager,
-    @inject('statusBarItem') statusBarItem: vscode.StatusBarItem,
+    @inject('statusBarItem') statusBarItem: vscode.StatusBarItem
   ) {
-    this.pttClient = pttClient;
-    this.stateManager = stateManager;
-    this.statusBarItem = statusBarItem;
-  }
-
-  async openLoginForm() {
-    const username = await vscode.window.showInputBox({
-      placeHolder: 'username',
-    });
-    if (!username) {
-      vscode.window.showErrorMessage(
-        '帳號不可為空(ﾒ ﾟ皿ﾟ)ﾒ',
-        ...['知道了。･ﾟ･(つд`ﾟ)･ﾟ･'],
-      );
-      return;
-    }
-    const password = await vscode.window.showInputBox({
-      placeHolder: 'password',
-    });
-    if (!password) {
-      vscode.window.showErrorMessage(
-        '密碼不可為空(ﾒ ﾟ皿ﾟ)ﾒ',
-        ...['知道了。･ﾟ･(つд`ﾟ)･ﾟ･'],
-      );
-      return;
-    }
-
-    this.stateManager.setState('username', username);
-    this.stateManager.setState('password', password);
-
-    await this.authenticate();
+    this.pttClient = pttClient
+    this.stateManager = stateManager
+    this.statusBarItem = statusBarItem
   }
 
   enterGuestMode() {
-    this.stateManager.setState('viewingMode', 'guest');
-    this.statusBarItem.text = `👤 訪客模式`;
-    this.statusBarItem.show();
+    this.stateManager.setState('viewingMode', 'guest')
+    this.statusBarItem.text = `👤 訪客模式`
+    this.statusBarItem.show()
   }
 
-  async authenticate() {
-    const response = await this.pttClient.login(
-      this.stateManager.getState('username'),
-      this.stateManager.getState('password'),
-      true,
-    );
-    if (response) {
-      this.stateManager.setState('viewingMode', 'logged');
+  async authenticate({
+    username,
+    password
+  }: {
+    username: string
+    password: string
+  }) {
+    const isLoginSuccessed = await this.pttClient.login(
+      username,
+      password,
+      true
+    )
 
-      this.statusBarItem.text = `👤 鄉民 ${this.stateManager.getState('username')}`;
-      this.statusBarItem.show();
-      return;
+    if (isLoginSuccessed) {
+      this.stateManager.setState('username', username)
+      this.stateManager.setState('password', password)
+      this.stateManager.setState('viewingMode', 'logged')
+    } else {
+      this.stateManager.setState('username', '')
+      this.stateManager.setState('password', '')
+      this.stateManager.setState('viewingMode', 'not-decided')
     }
-    vscode.window.showErrorMessage(
-      '登入失敗，帳密打錯了吧(´_ゝ`)',
-      ...['哪尼Σ(;ﾟдﾟ)'],
-    );
+    return { isLoginSuccessed }
+    // if (response) {
+    // this.stateManager.setState('viewingMode', 'logged');
+    // this.statusBarItem.text = `👤 鄉民 ${this.stateManager.getState('username')}`;
+    // this.statusBarItem.show();
+    //   return;
+    // }
+    // vscode.window.showErrorMessage(
+    //   '登入失敗，帳密打錯了吧(´_ゝ`)',
+    //   ...['哪尼Σ(;ﾟдﾟ)'],
+    // );
   }
 }
